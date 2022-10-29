@@ -3,7 +3,7 @@
 > **WARNING** <br>
 This action currently only supports spawning **Windows** machines, Linux is planned and will be added soon. 
 
-This action spawns an [EC2 instance](https://aws.amazon.com/ec2/) on AWS based on a predefined [Launch Template](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html)
+This action spawns an [EC2 instance](https://aws.amazon.com/ec2/) on AWS, based on a predefined [Launch Template](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html)
 
 All machines are **completely ephemeral** and will cease to exist as soon as a single job is run using them. 
 
@@ -33,8 +33,8 @@ Usage Example can be found in [sample-runner-spawn.yml](./.github/workflows/test
 
 ## Setting up
 ### Broker
-This action requires a pre-set-up agent in EC2 that will spawn an EC2 Instance from a Launch Template and save required data to SSM Parameter Store, we call this agent **broker**.<br>
-The broker can be a small machine, like a T2.micro with Amazon Linux 2, the spawn instances AWS CLI takes mere seconds to run, unless you have a high volume of machines to spawn, a single one can handle all your jobs.
+This action requires a pre-set-up agent in EC2 that will run this Action, spawning EC2 Instance from a Launch Template and saving required data to SSM Parameter Store, we call this agent **Broker**.<br>
+The Broker can be a small machine, like a T2.micro with Amazon Linux 2, the spawn instances AWS CLI call takes mere seconds to run, unless you have a high volume of machines to spawn, a single one can handle all your workflows.
 
 Broker Requirements:
 - Node LTS
@@ -59,6 +59,6 @@ Launch Template Requirement:
 This would require generating AWS API Keys, bringing them manualy to Github, and having those keys injected in a shared context at every run. I prefer to have the cost of the Broker, less than 5usd, than to add the dangers of generating AWS API keys and adding them to a third party website.
 
 ## Why isn't the Broker a Lambda function?
-The Broker has the security of Lambda with the simplicity of it being a single resource. The Lambda would require an explosed endpoint throught API Gateway, adding another resource to setup, mantain and be aware of security, the Broker has no exposed ports or endpoints.
+The Broker has the security of Lambda with the simplicity of it being a single resource. The Lambda would require an exposed endpoint throught API Gateway, adding another resource to setup, mantain and be aware of security, the Broker has no exposed ports or endpoints.
 With the Broker, the actual logic can be reviwed and edited right here on Github, a Lambda would require a deploy to AWS at every new development.
-Another reson is debbuging and development, errors and logs would be confined to Cloud Watch, with the Broker, they are all displayed directly in the Job logs.
+Another reason is debbuging and development, errors and logs would be confined to Cloud Watch, with the Broker, they are all displayed directly in the Job logs.
