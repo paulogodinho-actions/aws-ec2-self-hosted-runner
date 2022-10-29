@@ -53,3 +53,12 @@ Launch Template Requirement:
 ## Future improvements:
 - Allow for spawning of Linux machines
 - Allow for greater control of Instance life cycle, allowing more jobs to run on a single Instance
+
+# Design Decisions
+## Why not call the AWS CLI from a Github default runner?
+This would require generating AWS API Keys, bringing them manualy to Github, and having those keys injected in a shared context at every run. I prefer to have the cost of the Broker, less than 5usd, than to add the dangers of generating AWS API keys and adding them to a third party website.
+
+## Why isn't the Broker a Lambda function?
+The Broker has the security of Lambda with the simplicity of it being a single resource. The Lambda would require an explosed endpoint throught API Gateway, adding another resource to setup, mantain and be aware of security, the Broker has no exposed ports or endpoints.
+With the Broker, the actual logic can be reviwed and edited right here on Github, a Lambda would require a deploy to AWS at every new development.
+Another reson is debbuging and development, errors and logs would be confined to Cloud Watch, with the Broker, they are all displayed directly in the Job logs.
