@@ -1,0 +1,38 @@
+name: Test this action
+
+on:
+  workflow_dispatch:
+    inputs:
+      AWS_InstanceIdToUse:
+        description: 'Instance Id to Spawn EC2 from'
+        required: true
+      AWS_Region:
+        description: 'Region to Spawn Instance'
+        required: true
+        default: 'us-east-1' 
+        type: choice
+        options:
+        - us-east-1
+        - us-east-2
+
+jobs:
+  setup-runner:
+    name: Setup labels with a Launch Template and Unique Id
+    runs-on: [self-hosted, broker]
+    steps:
+      - id: spawn-ec2-machine
+        uses: paulohgodinho/self-hosted-runner-testing@lastest
+        with:
+          github-token: ${{ secrets.PERSONAL_KEY }}
+          aws-region: ${{ inputs.AWS_Region }}
+          launch-template-id: ${{ inputs.AWS_InstanceIdToUse }}
+    outputs:
+      labels: ${{ steps.spawn-ec2-machine.outputs.labels }}
+  
+  build:
+    needs: [setup-runner]
+    runs-on: ${{ fromJSON(needs.setup-runner.outputs.labels) }}
+    steps:
+      - name: Run a one-line script
+        run: echo "Hello World"
+

@@ -1,0 +1,22 @@
+name: 'Just a Test'
+description: 'Testing custom action'
+inputs:
+  github-token:
+    description: >-
+      GitHub Personal Access Token with the 'repo' scope assigned.
+    required: true
+  aws-region:
+    description: >-
+      The region to spawn the EC2 machine in. 
+    required: true
+  launch-template-id:
+    description: >-
+      The Launch Template ID to use when calling EC2.RunInstances command. 
+    required: true
+outputs:
+  labels: # output will be available to future steps
+    description: 'Labels to be used on runs-on parameter of future steps/jobs'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+  # post: 'dist/index.js'
