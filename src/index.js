@@ -20,7 +20,7 @@ async function run() {
     let userData = null;
 
     if(core.getInput('user-data')) {
-      const windows_user_data_path = `${__dirname}/../user_data_windows.ps1`;
+      const windows_user_data_path = core.getInput('user-data');
       const userDataFile = await fs.readFile(windows_user_data_path, 'utf8');
       const userDataAsB64 = Buffer.from(userDataFile).toString('base64');
       userData = userDataAsB64
