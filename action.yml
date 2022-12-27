@@ -13,6 +13,11 @@ inputs:
     description: >-
       The Launch Template ID to use when calling EC2.RunInstances command. 
     required: true
+  user-data: # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
+    description: >-
+      User Data File Path
+    default: ""
+    required: false
 outputs:
   labels: # output will be available to future steps
     description: 'Labels to be used on runs-on parameter of future steps/jobs'

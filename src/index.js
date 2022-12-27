@@ -17,9 +17,14 @@ let instanceId = '';
 async function run() {
   try {
 
-    const windows_user_data_path = `${__dirname}/../user_data_windows.ps1`;
-    const userData = await fs.readFile(windows_user_data_path, 'utf8');
-    const userDataAsB64 = Buffer.from(userData).toString('base64');
+    let userData = null;
+
+    if(core.getInput('user-data')) {
+      const windows_user_data_path = `${__dirname}/../user_data_windows.ps1`;
+      const userDataFile = await fs.readFile(windows_user_data_path, 'utf8');
+      const userDataAsB64 = Buffer.from(userDataFile).toString('base64');
+      userData = userDataAsB64
+    }
 
     const repoUrl = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}`;
     const token = await getRegistrationToken();
@@ -34,7 +39,7 @@ async function run() {
       const runInstancesCommand = new EC2.RunInstancesCommand({
         MinCount: 1,
         MaxCount: 1,
-        UserData: userDataAsB64,
+        UserData: userData ? userData : "",
         LaunchTemplate: {
           LaunchTemplateId: launchTemplateId
         }
