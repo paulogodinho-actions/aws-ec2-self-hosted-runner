@@ -23,6 +23,7 @@ async function run() {
       const windows_user_data_path = core.getInput('user-data');
       const userDataFile = await fs.readFile(windows_user_data_path, 'utf8');
       const userDataAsB64 = Buffer.from(userDataFile).toString('base64');
+      core.info(`Loaded User Data with ${userDataAsB64.length} in size as b64`)
       userData = userDataAsB64
     }
 
@@ -70,6 +71,7 @@ async function run() {
     core.info(`Labels: ${toSetAsOutput}`);
 
     core.setOutput('labels', toSetAsOutput);
+    core.setOutput('instance-id', `${instanceId}`)
   } catch (error) {
     core.setFailed(error.message);
   }
