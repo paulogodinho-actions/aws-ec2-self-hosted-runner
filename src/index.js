@@ -9,8 +9,8 @@ require('path')
 const aws_region = core.getInput('aws-region')
 core.info(`Region: ${aws_region}`)
 
-const SSMClient = new SSM.SSMClient({region: aws_region});
-const EC2Client = new EC2.EC2Client({region: aws_region});
+const SSMClient = new SSM.SSMClient({ region: aws_region });
+const EC2Client = new EC2.EC2Client({ region: aws_region });
 
 let instanceId = '';
 
@@ -19,7 +19,7 @@ async function run() {
 
     let userData = null;
 
-    if(core.getInput('user-data')) {
+    if (core.getInput('user-data')) {
       const windows_user_data_path = core.getInput('user-data');
       const userDataFile = await fs.readFile(windows_user_data_path, 'utf8');
       const userDataAsB64 = Buffer.from(userDataFile).toString('base64');
@@ -30,6 +30,7 @@ async function run() {
     const repoUrl = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}`;
     const token = await getRegistrationToken();
     const launchTemplateId = core.getInput('launch-template-id');
+    const instanceName = core.getInput('instance-name');
 
     core.info(`Working on region ${aws_region}`);
     core.info(`Repository ${repoUrl}`);
@@ -41,13 +42,14 @@ async function run() {
         MinCount: 1,
         MaxCount: 1,
         UserData: userData ? userData : "",
+        TagSpecifications: instanceName ? [{ ResourceType: EC2.ResourceType.instance, Tags: [{ Key: "Name", Value: `${instanceName}` }] }] : [],
         LaunchTemplate: {
           LaunchTemplateId: launchTemplateId
         }
       });
       const response = await EC2Client.send(runInstancesCommand);
 
-      if(response.Instances == undefined) {
+      if (response.Instances == undefined) {
         throw 'No InstanceId defined for Instance';
       }
       if (response.Instances.length != 1) {

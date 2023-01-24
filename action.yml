@@ -13,6 +13,11 @@ inputs:
     description: >-
       The Launch Template ID to use when calling EC2.RunInstances command. 
     required: true
+  instance-name:
+    description: >-
+      Name to give the EC2 Instance.
+    default: "" 
+    required: false
   user-data: # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
     description: >-
       User Data File Path
